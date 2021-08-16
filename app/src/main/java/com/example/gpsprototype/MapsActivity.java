@@ -23,17 +23,11 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.example.gpsprototype.databinding.ActivityMapsBinding;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -42,7 +36,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private FusedLocationProviderClient mFusedLocationClient;
     private LocationListener locationListener;
     private LocationManager locationManager;
-
+    private MarkerOptions marker;
     //private LatLng latLng;
 
     @Override
@@ -62,19 +56,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //latLng = new LatLng(location.getLatitude(), location.getLongitude());
     }
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
 
+
+        mMap = googleMap;
+        BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.marker);
+        marker = new MarkerOptions().position().title("you.").icon(icon);
 
         //Drawable resImg = this.getResources().getDrawable(R.drawable.marker);
        // marker = new MarkerOptions();
@@ -82,7 +71,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
        // marker.title("You");
         //MarkerOptions icon = marker.icon(new BitmapDescriptor(new ObjectWrapper<>(resImg)));
 
-        BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.marker);
+
        // marker = new MarkerOptions().position(latLng).title("you.").icon(icon);
         //mMap.addMarker(marker);
         mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.mapstyle));
@@ -92,9 +81,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onLocationChanged(@NonNull Location location) {
                 LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-                MarkerOptions marker;
-                marker = new MarkerOptions().position(latLng).title("you.").icon(icon);
-                mMap.addMarker(marker);
+                if(marker == null) {
+
+
+                    Marker m = mMap.addMarker(marker);
+                }
+                else(){
+                    Marker m = mMap.addMarker(marker);
+                    m.setPosition(latLng);
+                }
+
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
 
             }
